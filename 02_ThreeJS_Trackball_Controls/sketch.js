@@ -3,39 +3,62 @@ import * as THREE from './three.module.js';
 import { TrackballControls } from './TrackballControls.js';
 
 
-var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-var controls;
+var camera, controls, scene, renderer;
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild(renderer.domElement);
+init();
+animate();
 
-var geometry = new THREE.BoxGeometry();
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+function init(){
 
-camera.position.z = 5;
-createControls( camera );
+    // Set up camera
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera.position.z = 5;
+    
+    // Set up scene
+    createScene();
+
+    // Set up renderer
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild(renderer.domElement);
+
+    // Set up trackball controls
+    controls = new TrackballControls( camera, renderer.domElement );
+    controls.rotateSpeed = 4.0;
+    controls.zoomSpeed = 2.0;
+    controls.panSpeed = 4.0;
+    controls.keys = [ 65, 83, 68 ];
+}
+
+function createScene(){
+    scene = new THREE.Scene();
+
+
+
+    scene.background = new THREE.Color( 0xcccccc );
+    scene.fog = new THREE.FogExp2( 0xcccccc, 0.1 );
+    
+    let startColor = new THREE.Color(0x30cfd0)
+    let endColor = new THREE.Color(0x330867)
+
+    const cubeNr = 1000;
+    for(let i = 0; i < cubeNr; i++){
+        let geometry = new THREE.BoxGeometry();
+        let material = new THREE.MeshBasicMaterial();
+        material.color = new THREE.Color(startColor).lerp(endColor, i/cubeNr)
+
+        let cube = new THREE.Mesh( geometry, material );
+        
+        cube.position.x = ( Math.random() - 0.5 ) * 30;
+        cube.position.y = ( Math.random() - 0.5 ) * 30;
+        cube.position.z = ( Math.random() - 0.5 ) * 30;
+
+        scene.add( cube );
+    }
+}
 
 function animate() {
     requestAnimationFrame( animate );
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
     controls.update();
     renderer.render( scene, camera );
-}
-animate();
-
-function createControls( camera ) {
-
-    controls = new TrackballControls( camera, renderer.domElement );
-
-    controls.rotateSpeed = 4.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-
-    controls.keys = [ 65, 83, 68 ];
-
 }
