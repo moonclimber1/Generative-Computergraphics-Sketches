@@ -1,6 +1,10 @@
 
-import * as THREE from './three.module.js';
-import { TrackballControls } from './TrackballControls.js';
+// import * as THREE from './three.module.js';
+// import { TrackballControls } from './TrackballControls.js';
+
+
+import * as THREE from 'https://unpkg.com/three@0.120.1/build/three.module.js';
+import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
 
 
 var camera, controls, scene, renderer;
