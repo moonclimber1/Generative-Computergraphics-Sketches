@@ -37,8 +37,6 @@ function init(){
 function createScene(){
     scene = new THREE.Scene();
 
-
-
     scene.background = new THREE.Color( 0xcccccc );
     scene.fog = new THREE.FogExp2( 0xcccccc, 0.1 );
     
