@@ -12,6 +12,7 @@ var camera, controls, scene, renderer, mesh;
 
 var perlin = new ImprovedNoise();
 var noiseOffset = 0;
+var sphereVertices;
 
 init();
 animate();
@@ -42,16 +43,24 @@ function createScene(){
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x292929 );
 
-    const geometry = new THREE.SphereGeometry( 1, 50, 50);
+    const geometry = new THREE.SphereGeometry( 1.5, 60, 60);
+
+    sphereVertices = _.cloneDeep(geometry.vertices)
     geometry.vertices.map(vec => {
         return vec.multiplyScalar(1.5+perlin.noise(vec.x,vec.y,vec.z))
     });
     geometry.computeVertexNormals()
-    // geometry.computeFaceNormals();
-    
 
-    // const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random(), flatShading: false });
-    const material = new THREE.MeshNormalMaterial();
+    console.log("createScene -> initialVertices", sphereVertices)
+    console.log("createScene -> geometry.vertices", geometry.vertices)
+    
+    // const color = 0xffffff * Math.random();
+    const color = 10903978.777085803;
+    console.log("createScene -> color", color)
+    console.log("createScene -> decimalToHexString(color)", decimalToHexString(color))
+
+    const material = new THREE.MeshPhongMaterial({ color: color, flatShading: false });
+    // const material = new THREE.MeshNormalMaterial();
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh)
 
@@ -63,44 +72,52 @@ function createScene(){
     // scene.add(light);
 
     
-    const light1 = new THREE.PointLight(0xFFFFFF, 1);
+    const light1 = new THREE.PointLight(0xfc00ff, 1);
     light1.position.set(10, 1, 1);
     scene.add(light1);
 
-    const light2 = new THREE.PointLight(0xFFFFFF, 1);
+    const light2 = new THREE.PointLight(0x00dbde, 1);
     light2.position.set(-4, 3, 3);
     scene.add(light2);
 
 }
 
 function animate() {
-    requestAnimationFrame( animate );
-    mesh.rotation.x += 0.006
-    mesh.rotation.y += 0.006
+    mesh.rotation.x += 0.004
+    mesh.rotation.y += 0.004
+    noiseOffset += 0.006
 
-    noiseOffset += 0.01
+    const newVertices = _.cloneDeep(sphereVertices);
 
-    //mesh.geometry.vertices[0].multiplyScalar(1 + noiseOffset)
-    
-    mesh.geometry.vertices.map(vec => {
-        //return vec.multiplyScalar(0.5 + perlin.noise(vec.x,vec.y,vec.z + noiseOffset))
-        //return vec.multiplyScalar(1+noiseOffset)
-        
-        return vec.multiplyScalar(1 + Math.sin(noiseOffset))
+    newVertices.map(vec => {
+        return vec.multiplyScalar(1 + perlin.noise(vec.x + noiseOffset,vec.y + noiseOffset,vec.z + noiseOffset))
     });
+    mesh.geometry.vertices = newVertices;
+    mesh.geometry.computeVertexNormals()
 
-    console.log("animate -> Math.sin(noiseOffset)", Math.sin(noiseOffset))
 
-    // scene.remove(mesh)
-    // scene.add(mesh)
+    // //mesh.geometry.vertices[0].multiplyScalar(1 + noiseOffset)
+    
+    // mesh.geometry.vertices.map(vec => {
+    //     //return vec.multiplyScalar(0.5 + perlin.noise(vec.x,vec.y,vec.z + noiseOffset))
+    //     return vec.multiplyScalar(1+noiseOffset)
+        
+    //     // return vec.multiplyScalar(1 + Math.sin(noiseOffset))
+    // });
 
-    // mesh.geometry.computeFaceNormals();
-    mesh.geometry.verticesNeedUpdate = true;
-    mesh.geometry.normalsNeedUpdate = true;
+    // console.log("animate -> Math.sin(noiseOffset)", Math.sin(noiseOffset))
+
+    // // scene.remove(mesh)
+    // // scene.add(mesh)
+
+    // // mesh.geometry.computeFaceNormals();
+
+    // mesh.geometry.verticesNeedUpdate = true;
+    // mesh.geometry.normalsNeedUpdate = true;
     
 
     // mesh.geometry.verticesNeedUpdate = true;
-    // mesh.geometry.elementsNeedUpdate = true;
+    mesh.geometry.elementsNeedUpdate = true;
     // mesh.geometry.morphTargetsNeedUpdate = true;
     // mesh.geometry.uvsNeedUpdate = true;
     // mesh.geometry.normalsNeedUpdate = true;
@@ -110,7 +127,16 @@ function animate() {
 
     controls.update();
     renderer.render( scene, camera );
+    requestAnimationFrame( animate );
+}
 
 
+function decimalToHexString(number)
+{
+  if (number < 0)
+  {
+    number = 0xFFFFFFFF + number + 1;
+  }
 
+  return number.toString(16).toUpperCase();
 }
