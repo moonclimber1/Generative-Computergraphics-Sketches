@@ -45,7 +45,7 @@ function createScene(){
             const height = (perlin.noise(x/10,0, z/10)+0.6)*10
             const size = Math.random() * 3;
 
-            const geometry = new THREE.BoxGeometry(size + 1/height * 3, height, size + 1/height*3);
+            const geometry = new THREE.BoxBufferGeometry(size, height, size);
             const material = new THREE.MeshPhongMaterial({ color: 0xcccccc, flatShading: false });
             
             
