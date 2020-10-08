@@ -3,6 +3,7 @@
 import * as THREE from 'https://unpkg.com/three@0.120.1/build/three.module.js';
 import { TrackballControls } from 'https://unpkg.com/three@0.120.1/examples/jsm/controls/TrackballControls.js';
 import { ImprovedNoise } from 'https://unpkg.com/three@0.120.1/examples/jsm/math/ImprovedNoise.js';
+import Stats from 'https://unpkg.com/three@0.120.1/examples/jsm/libs/stats.module.js';
 
 var camera, controls, scene, renderer;
 var light1;
@@ -10,13 +11,20 @@ var boxes = [];
 var frame = 0;
 var perlin = new ImprovedNoise();
 
+var lastTunnel = new THREE.Object3D()
+var currentTunnel = new THREE.Object3D()
+
+var stats;
+
+var time = new Date().getTime();
+
 init();
 animate();
 
 function init(){
 
     // Set up camera
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.5, 4 );
     camera.position.z = 5;
     
     // Set up scene
@@ -36,23 +44,28 @@ function init(){
     controls.zoomSpeed = 2.0;
     controls.panSpeed = 4.0;
     controls.keys = [ 65, 83, 68 ];
+
+    // Setup stats
+    stats = new Stats();
+    document.body.appendChild(stats.dom);
+
+    
 }
 
 function createScene(){
     scene = new THREE.Scene();
 
     scene.background = new THREE.Color( 0x000000 );
+    scene.fog = new THREE.FogExp2( 0x000000, 0.5);
 
 
-    const geometry = new THREE.PlaneBufferGeometry( 2, 2, 1 );
+    const geometry = new THREE.PlaneBufferGeometry( 2, 4, 1 );
     const material = new THREE.MeshPhongMaterial({ color: 0xcccccc, flatShading: true, side: THREE.DoubleSide});
-
-    const tunnelElement = new THREE.Object3D()
 
     const plane1 = new THREE.Mesh( geometry, material );
 
-    for(let y = 1; y > -1; y-= 0.1){
-        for(let x = -1; x < 1; x+= 0.1){
+    for(let y = 2; y > -2; y-= 0.15){
+        for(let x = -1; x < 1; x+= 0.15){
             
             const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1);
             const material = new THREE.MeshPhongMaterial({ color: 0xcccccc});
@@ -80,56 +93,64 @@ function createScene(){
     
     
 
-    const positions = boxes[0].geometry.attributes.position.array;
-    console.log("createScene -> positions", positions)
-    const posVectors = []
+    // const positions = boxes[0].geometry.attributes.position.array;
+    // console.log("createScene -> positions", positions)
+    // const posVectors = []
 
 
-    for(let i = 0; i < positions.length; i+=3){
-        const x = positions[i]
-        const y = positions[i+1]
-        const z = positions[i+2]
-        console.log("createScene -> x,y,z", i/3, ": ", x.toFixed(2)*20,y.toFixed(2)*20,z.toFixed(2)*20)
-    }
+    // for(let i = 0; i < positions.length; i+=3){
+    //     const x = positions[i]
+    //     const y = positions[i+1]
+    //     const z = positions[i+2]
+    //     console.log("createScene -> x,y,z", i/3, ": ", x.toFixed(2)*20,y.toFixed(2)*20,z.toFixed(2)*20)
+    // }
     
-    const vertices = boxes[0].geometry.vertices
-    console.log("createScene -> vertices", vertices)
+    // const vertices = boxes[0].geometry.vertices
+    // console.log("createScene -> vertices", vertices)
 
-    const arrTwo = posVectors.filter((item, index) => posVectors.indexOf(item) == index);
-    console.log("Dupl " + arrTwo);
+    // const arrTwo = posVectors.filter((item, index) => posVectors.indexOf(item) == index);
+    // console.log("Dupl " + arrTwo);
     
 
-
-    console.log("createScene -> positions", positions)
 
     plane1.rotation.x = Math.PI/2;
     plane1.position.y = -1;
-    tunnelElement.add(plane1);
+    currentTunnel.add(plane1);
 
-    // const plane2 = plane1.clone()
-    // plane2.position.x = -1;
-    // plane2.position.y = 0
-    // plane2.rotation.y = -Math.PI/2;
-    // tunnelElement.add(plane2);
+    const plane2 = plane1.clone()
+    plane2.position.x = -1;
+    plane2.position.y = 0
+    plane2.rotation.y = -Math.PI/2;
+    currentTunnel.add(plane2);
 
-    // const plane3 = plane1.clone()
-    // plane3.position.x = 1;
-    // plane3.position.y = 0
-    // plane3.rotation.y = Math.PI/2;;
-    // tunnelElement.add(plane3);
+    const plane3 = plane1.clone()
+    plane3.position.x = 1;
+    plane3.position.y = 0
+    plane3.rotation.y = Math.PI/2;
+    currentTunnel.add(plane3);
 
-    // const plane4 = plane1.clone()
-    // plane4.position.y = 1;
-    // plane4.rotation.x = -Math.PI/2;
-    // tunnelElement.add(plane4);
+    const plane4 = plane1.clone()
+    plane4.position.y = 1;
+    plane4.rotation.x = Math.PI/2;
+    plane4.rotation.y = Math.PI
+    currentTunnel.add(plane4);
+
+    currentTunnel.position.z = 2;
+    lastTunnel = currentTunnel.clone()
+    lastTunnel.position.z = 6
+    scene.add(currentTunnel)
+    scene.add(lastTunnel)
 
 
-    tunnelElement.position.z = 2;
-    scene.add(tunnelElement)
 
-    // const newTunnelElement = tunnelElement.clone();
-    // newTunnelElement.position.z = 0;
-    // scene.add(newTunnelElement)
+
+
+    currentTunnel.position
+    console.log("createScene -> currentTunnel.position", currentTunnel.position)
+
+    // const newcurrentTunnel = currentTunnel.clone();
+    // newcurrentTunnel.position.z = 0;
+    // scene.add(newcurrentTunnel)
         
 
 
@@ -178,7 +199,7 @@ function createScene(){
 
     
 
-    light1 = new THREE.PointLight(0xC6FFDD, 1);
+    light1 = new THREE.PointLight(0xffffff, 0.8);
     light1.position.set(0, 0, 4);
     scene.add(light1);
     // scene.add(new THREE.PointLightHelper(light1));
@@ -187,19 +208,51 @@ function createScene(){
 }
 
 function animate() {
+
+    // const now = new Date().getTime();
+    // const dt = now - time;
+    // time = now;
+
     requestAnimationFrame( animate );
     frame++
-    controls.update();
+    // controls.update();
     renderer.render( scene, camera );
+    camera.position.z -= 0.04
+    camera.rotation.z = frame/300 * Math.PI
     light1.position.set(camera.position.x, camera.position.y, camera.position.z)
 
-    boxes.forEach((box) => {
-        const height = Math.abs(perlin.noise(box.position.x + frame/400,box.position.y + frame/400,0))
-        const size = Math.abs(perlin.noise(box.position.x + frame/1000,box.position.y + frame/1000,1))*8
-        const width = Math.abs(perlin.noise(box.position.x + frame/888,box.position.y + frame/888,2))*8
-        box.scale.set(size,width,height)
-        box.position.z = -height/2;
+
+
+    if(camera.position.z < (currentTunnel.position.z + 1.5)){
+        lastTunnel.position.z = currentTunnel.position.z - 4;
+        
+        const tmp = currentTunnel;
+        currentTunnel = lastTunnel;
+        lastTunnel = tmp;
+    }
+
+
+    var tunnels = [currentTunnel, lastTunnel]
+    tunnels.forEach(tunnel => {
+        tunnel.children.forEach((wall,index) =>{
+            wall.children.forEach(box => {
+                // const height = Math.abs(perlin.noise(box.position.x + frame/400,box.position.y + frame/400,camera.position.z))*1.3
+                const height = Math.abs(perlin.noise(box.position.x,box.position.y,camera.position.z/4))*1.1
+                const size = Math.abs(perlin.noise(box.position.x + frame/1000,box.position.y + frame/1000,index + 1))*8
+                const width = Math.abs(perlin.noise(box.position.x + frame/888,box.position.y + frame/888,index + 2))*8
+                box.scale.set(size,width,height)
+                box.position.z = -height/2;
+            })
+        })
     })
+
+    
+    stats.update();
+   
+
+    
+
+    
 }
 
 function onWindowResize() {
