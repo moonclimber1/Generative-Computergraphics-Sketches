@@ -52,15 +52,11 @@ function init(){
     var renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
 
-    // var glitchPass = new GlitchPass();
-    // glitchPass.goWild = false;
-    // composer.addPass(glitchPass);
-
-    // var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-    // bloomPass.threshold = 0
-    // bloomPass.strength = 2;
-    // bloomPass.radius = 0;
-    // composer.addPass( bloomPass );
+    var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    bloomPass.threshold = 0
+    bloomPass.strength = 2;
+    bloomPass.radius = 0;
+    composer.addPass( bloomPass );
 
     //Resize Listener
     window.addEventListener('resize', onWindowResize, false);
@@ -85,21 +81,18 @@ function createScene(){
     scene.fog = new THREE.FogExp2( 0x000000, 0.4);
 
 
-    const geometry = new THREE.PlaneBufferGeometry( 2, 4, 1 );
-    const material = new THREE.MeshPhongMaterial({ color: 0xcccccc, flatShading: true, side: THREE.DoubleSide});
-
-    const plane1 = new THREE.Mesh( geometry, material );
+    const plane1 = new THREE.Object3D();
 
     for(let y = 2; y > -2; y-= 0.15){
         for(let x = -1; x < 1; x+= 0.15){
             
             const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1);
-            // var edges = new THREE.EdgesGeometry( geometry );
-            // var box = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x49a09d } ) );
+            var edges = new THREE.EdgesGeometry( geometry );
+            var box = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x49a09d } ) );
 
             
             const material = new THREE.MeshPhongMaterial({ color: 0xcccccc});
-            const box = new THREE.Mesh(geometry, material);
+
 
             box.position.x = x;
             box.position.y = y;
@@ -107,7 +100,10 @@ function createScene(){
             plane1.add(box)
             boxes.push(box)
         }
-    }    
+    }
+
+
+    
 
 
     plane1.rotation.x = Math.PI/2;
@@ -140,9 +136,9 @@ function createScene(){
 
     
 
-    light1 = new THREE.PointLight(0xffffff, 0.5);
-    light1.position.set(0, 0, 4);
-    scene.add(light1);
+    // light1 = new THREE.PointLight(0xffffff, 0.5);
+    // light1.position.set(0, 0, 4);
+    // scene.add(light1);
     // scene.add(new THREE.PointLightHelper(light1));
 
     
@@ -163,7 +159,7 @@ function animate() {
     composer.render()
     camera.position.z -= 0.04
     camera.rotation.z = frame/300 * Math.PI
-    light1.position.set(camera.position.x, camera.position.y, camera.position.z)
+    // light1.position.set(camera.position.x, camera.position.y, camera.position.z)
 
 
 

@@ -9,6 +9,11 @@ import { RenderPass } from 'https://unpkg.com/three@0.120.1/examples/jsm/postpro
 import { EffectComposer } from 'https://unpkg.com/three@0.120.1/examples/jsm/postprocessing/EffectComposer.js';
 import { UnrealBloomPass } from 'https://unpkg.com/three@0.120.1/examples/jsm/postprocessing/UnrealBloomPass.js';
 
+import { ShaderPass } from 'https://unpkg.com/three@0.120.1/examples/jsm/postprocessing/ShaderPass.js';
+import { RGBShiftShader } from 'https://unpkg.com/three@0.120.1/examples/jsm/shaders/RGBShiftShader.js';
+import { DotScreenShader } from 'https://unpkg.com/three@0.120.1/examples/jsm/shaders/DotScreenShader.js';
+import { HalftonePass } from 'https://unpkg.com/three@0.120.1/examples/jsm/postprocessing/HalftonePass.js';
+
 
 var camera, composer, controls, scene, renderer;
 var light1;
@@ -30,7 +35,7 @@ animate();
 function init(){
 
     // Set up camera
-    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.5, 4 );
+    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.5, 7 );
     camera.position.z = 5;
     
     // Set up scene
@@ -46,11 +51,36 @@ function init(){
     document.body.appendChild(renderer.domElement);
 
 
-    // Glitch
+    // Shader
     composer = new EffectComposer(renderer);
 
-    var renderPass = new RenderPass(scene, camera);
+    const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
+
+    const params = {
+        shape: 1,
+        radius: 12,
+        rotateR: Math.PI / 12,
+        rotateB: Math.PI / 12 * 2,
+        rotateG: Math.PI / 12 * 3,
+        scatter: 1,
+        blending: 1,
+        blendingMode: 1,
+        greyscale: true,
+        disable: false
+    };
+    const halftonePass = new HalftonePass( window.innerWidth, window.innerHeight, params );
+    composer.addPass( renderPass );
+    composer.addPass( halftonePass );
+
+    // var effect = new ShaderPass( DotScreenShader );
+    // effect.uniforms[ 'scale' ].value = 5;
+    // composer.addPass( effect );
+
+    // var effect = new ShaderPass( RGBShiftShader );
+    // effect.uniforms[ 'amount' ].value = 0.002;
+    // composer.addPass( effect );
+
 
     // var glitchPass = new GlitchPass();
     // glitchPass.goWild = false;
@@ -82,7 +112,7 @@ function createScene(){
     scene = new THREE.Scene();
 
     scene.background = new THREE.Color( 0x000000 );
-    scene.fog = new THREE.FogExp2( 0x000000, 0.4);
+    scene.fog = new THREE.FogExp2( 0x000000, 0.3);
 
 
     const geometry = new THREE.PlaneBufferGeometry( 2, 4, 1 );
@@ -90,8 +120,8 @@ function createScene(){
 
     const plane1 = new THREE.Mesh( geometry, material );
 
-    for(let y = 2; y > -2; y-= 0.15){
-        for(let x = -1; x < 1; x+= 0.15){
+    for(let y = 2; y > -2; y-= 0.2){
+        for(let x = -1; x < 1; x+= 0.2){
             
             const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1);
             // var edges = new THREE.EdgesGeometry( geometry );
@@ -140,7 +170,7 @@ function createScene(){
 
     
 
-    light1 = new THREE.PointLight(0xffffff, 0.5);
+    light1 = new THREE.PointLight(0xffffff, 1.5);
     light1.position.set(0, 0, 4);
     scene.add(light1);
     // scene.add(new THREE.PointLightHelper(light1));
@@ -163,7 +193,7 @@ function animate() {
     composer.render()
     camera.position.z -= 0.04
     camera.rotation.z = frame/300 * Math.PI
-    light1.position.set(camera.position.x, camera.position.y, camera.position.z)
+    light1.position.set(camera.position.x, camera.position.y, camera.position.z-3)
 
 
 
