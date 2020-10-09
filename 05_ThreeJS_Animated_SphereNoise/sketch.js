@@ -51,9 +51,6 @@ function createScene(){
     });
     geometry.computeVertexNormals()
 
-    console.log("createScene -> initialVertices", sphereVertices)
-    console.log("createScene -> geometry.vertices", geometry.vertices)
-    
     // const color = 0xffffff * Math.random();
     const color = 10903978.777085803;
     console.log("createScene -> color", color)
@@ -63,14 +60,6 @@ function createScene(){
     // const material = new THREE.MeshNormalMaterial();
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh)
-
-    
-
-    // Add light
-    // const light = new THREE.DirectionalLight(0xffffff);
-    // light.position.set(100, 1, 1);
-    // scene.add(light);
-
     
     const light1 = new THREE.PointLight(0xfc00ff, 1);
     light1.position.set(10, 1, 1);
@@ -96,26 +85,6 @@ function animate() {
     mesh.geometry.computeVertexNormals()
 
 
-    // //mesh.geometry.vertices[0].multiplyScalar(1 + noiseOffset)
-    
-    // mesh.geometry.vertices.map(vec => {
-    //     //return vec.multiplyScalar(0.5 + perlin.noise(vec.x,vec.y,vec.z + noiseOffset))
-    //     return vec.multiplyScalar(1+noiseOffset)
-        
-    //     // return vec.multiplyScalar(1 + Math.sin(noiseOffset))
-    // });
-
-    // console.log("animate -> Math.sin(noiseOffset)", Math.sin(noiseOffset))
-
-    // // scene.remove(mesh)
-    // // scene.add(mesh)
-
-    // // mesh.geometry.computeFaceNormals();
-
-    // mesh.geometry.verticesNeedUpdate = true;
-    // mesh.geometry.normalsNeedUpdate = true;
-    
-
     // mesh.geometry.verticesNeedUpdate = true;
     mesh.geometry.elementsNeedUpdate = true;
     // mesh.geometry.morphTargetsNeedUpdate = true;
@@ -123,7 +92,6 @@ function animate() {
     // mesh.geometry.normalsNeedUpdate = true;
     // mesh.geometry.colorsNeedUpdate = true;
     // mesh.geometry.tangentsNeedUpdate = true;
-
 
     controls.update();
     renderer.render( scene, camera );

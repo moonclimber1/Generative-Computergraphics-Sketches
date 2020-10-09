@@ -73,25 +73,6 @@ function init(){
     composer.addPass( renderPass );
     composer.addPass( halftonePass );
 
-    // var effect = new ShaderPass( DotScreenShader );
-    // effect.uniforms[ 'scale' ].value = 5;
-    // composer.addPass( effect );
-
-    // var effect = new ShaderPass( RGBShiftShader );
-    // effect.uniforms[ 'amount' ].value = 0.002;
-    // composer.addPass( effect );
-
-
-    // var glitchPass = new GlitchPass();
-    // glitchPass.goWild = false;
-    // composer.addPass(glitchPass);
-
-    // var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-    // bloomPass.threshold = 0
-    // bloomPass.strength = 2;
-    // bloomPass.radius = 0;
-    // composer.addPass( bloomPass );
-
     //Resize Listener
     window.addEventListener('resize', onWindowResize, false);
 
@@ -123,11 +104,7 @@ function createScene(){
     for(let y = 2; y > -2; y-= 0.2){
         for(let x = -1; x < 1; x+= 0.2){
             
-            const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1);
-            // var edges = new THREE.EdgesGeometry( geometry );
-            // var box = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x49a09d } ) );
-
-            
+            const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1); 
             const material = new THREE.MeshPhongMaterial({ color: 0xcccccc});
             const box = new THREE.Mesh(geometry, material);
 
@@ -173,16 +150,9 @@ function createScene(){
     light1 = new THREE.PointLight(0xffffff, 1.5);
     light1.position.set(0, 0, 4);
     scene.add(light1);
-    // scene.add(new THREE.PointLightHelper(light1));
-
-    
 }
 
 function animate() {
-
-    // const now = new Date().getTime();
-    // const dt = now - time;
-    // time = now;
 
     requestAnimationFrame( animate );
 
@@ -220,13 +190,7 @@ function animate() {
         })
     })
 
-    
     stats.update();
-   
-
-    
-
-    
 }
 
 function onWindowResize() {
@@ -235,5 +199,4 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-
 }

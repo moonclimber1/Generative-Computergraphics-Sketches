@@ -56,12 +56,6 @@ function init(){
     // glitchPass.goWild = false;
     // composer.addPass(glitchPass);
 
-    // var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-    // bloomPass.threshold = 0
-    // bloomPass.strength = 2;
-    // bloomPass.radius = 0;
-    // composer.addPass( bloomPass );
-
     //Resize Listener
     window.addEventListener('resize', onWindowResize, false);
 
@@ -94,9 +88,6 @@ function createScene(){
         for(let x = -1; x < 1; x+= 0.15){
             
             const geometry = new THREE.BoxBufferGeometry(0.1, 0.1, 1);
-            // var edges = new THREE.EdgesGeometry( geometry );
-            // var box = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x49a09d } ) );
-
             
             const material = new THREE.MeshPhongMaterial({ color: 0xcccccc});
             const box = new THREE.Mesh(geometry, material);
@@ -150,10 +141,6 @@ function createScene(){
 
 function animate() {
 
-    // const now = new Date().getTime();
-    // const dt = now - time;
-    // time = now;
-
     requestAnimationFrame( animate );
 
 
@@ -190,13 +177,7 @@ function animate() {
         })
     })
 
-    
     stats.update();
-   
-
-    
-
-    
 }
 
 function onWindowResize() {

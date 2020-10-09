@@ -58,30 +58,6 @@ function createScene(){
         }
     }
 
-
-
-
-
-    // const cubeNr = 1000;
-
-
-
-
-
-    // for(let i = 0; i < cubeNr; i++){
-    //     let geometry = new THREE.BoxGeometry();
-    //     let material = new THREE.MeshBasicMaterial();
-    //     material.color = new THREE.Color(startColor).lerp(endColor, i/cubeNr)
-
-    //     let cube = new THREE.Mesh( geometry, material );
-        
-    //     cube.position.x = ( Math.random() - 0.5 ) * 30;
-    //     cube.position.y = ( Math.random() - 0.5 ) * 30;
-    //     cube.position.z = ( Math.random() - 0.5 ) * 30;
-
-    //     scene.add( cube );
-    // }
-
     const skyColor = 0xB1E1FF;  // light blue
     const groundColor = 0xB97A20;  // brownish orange
     const intensity = 0.3;
