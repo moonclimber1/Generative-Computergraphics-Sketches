@@ -1,8 +1,8 @@
 
 # Generative Computergraphics Sketches
 
-Jonas Wolter
-Course Generative Computergraphics 2020
+Jonas Wolter  
+Course Generative Computergraphics 2020  
 3. Semester, Digital Ideation, University of Applied Sciences and Arts 
 
 This collection contains all codes that have been created within the block module Generative Computer Graphics at the Lucerne University of Applied Sciences and Arts. 
